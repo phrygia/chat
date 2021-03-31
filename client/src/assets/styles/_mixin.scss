@@ -1,0 +1,135 @@
+// float clear
+@mixin clear {
+    &:after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+}
+@mixin background(
+    $color: transparent,
+    $img: file,
+    $type: svg,
+    $repeat: no-repeat,
+    $x: center,
+    $y: center,
+    $size: auto
+) {
+    background-color: $color;
+    background-image: url(~assets/icon/#{$img}.#{$type});
+    background-repeat: #{$repeat};
+    background-position: #{$x} #{$y};
+    background-size: $size;
+}
+@mixin centerPostion(
+    $position: static,
+    $zIndex: 1,
+    $transform: true,
+    $left: auto,
+    $top: auto
+) {
+    position: $position;
+    left: $left;
+    top: $top;
+    z-index: $zIndex;
+    @if $transform == true {
+        transform: translate(-50%, -50%);
+    }
+}
+@mixin position(
+    $position: static,
+    $left: auto,
+    $right: auto,
+    $top: auto,
+    $bottom: auto,
+    $zIndex: 1,
+    $width: auto
+) {
+    position: $position;
+    left: $left;
+    right: $right;
+    top: $top;
+    bottom: $bottom;
+    z-index: $zIndex;
+    width: $width;
+}
+@mixin default_button($width: auto, $background: transparent) {
+    width: $width;
+    background-color: $background;
+    border: 0;
+    outline: none;
+}
+@mixin default_font($fontWeight: 700, $size: 14px) {
+    font-weight: $fontWeight;
+    font-size: $size;
+}
+@mixin calc($property, $expression) {
+    #{$property}: -webkit-calc(#{$expression});
+    #{$property}: calc(#{$expression});
+}
+@mixin before(
+    $content: "",
+    $display: block,
+    $position: absolute,
+    $left: auto,
+    $right: auto,
+    $top: auto,
+    $bottom: auto,
+    $zIndex: 1
+) {
+    content: $content;
+    display: $display;
+    position: $position;
+    left: $left;
+    right: $right;
+    top: $top;
+    bottom: $bottom;
+    z-index: $zIndex;
+}
+@mixin boxShadow(
+    $xOffSet,
+    $yOffSet,
+    $blur,
+    $red,
+    $green,
+    $blue,
+    $opacity,
+    $inset: false
+) {
+    @if $inset == true {
+        box-shadow: #{$xOffSet}px
+            #{$yOffSet}px
+            #{$blur}px
+            rgba($red, $green, $blue, $opacity)
+            inset;
+    } @else {
+        box-shadow: #{$xOffSet}px
+            #{$yOffSet}px
+            #{$blur}px
+            rgba($red, $green, $blue, $opacity);
+    }
+}
+@mixin textOverflow($width: auto) {
+    display: inline-block;
+    max-width: $width;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: keep-all;
+}
+@mixin flexBetween {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+@mixin inputFocus($color) {
+    transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    &:focus {
+        border-color: $color;
+    }
+}
+@mixin minHeight {
+    min-height: calc(100vh - 60px);
+    background-color: $white;
+    margin-top: 60px;
+}
