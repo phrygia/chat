@@ -1,6 +1,6 @@
 @import "./color";
 @import "./mixin";
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap");
 
 *,
 :after,
@@ -87,5 +87,5 @@ a {
 .info_error {
     margin-top: 8px;
     color: #e65f3e;
-    font-size: 0.9rem;
+    letter-spacing: -0.5px;
 }

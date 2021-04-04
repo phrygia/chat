@@ -4,9 +4,13 @@ import { useDispatch } from "react-redux";
 import { registerUser } from "../../redux/_actions/user_action";
 import { Link, withRouter } from "react-router-dom";
 import styled from "styled-components";
-import close from "../../assets/image/close.png";
+import close from "../../assets/images/close.png";
+import { useForm } from "react-hook-form";
+import firebase from "../../firebase";
 
 const Form = styled.form`
+    height: 100%;
+    overflow-y: auto;
     h1 {
         margin: 50px 0 40px;
         text-align: center;
@@ -16,7 +20,7 @@ const Form = styled.form`
     .input_box {
         li {
             width: 355px;
-            margin: 10px auto 15px;
+            margin: 10px auto 20px;
             label {
                 display: block;
                 margin-bottom: 8px;
@@ -91,35 +95,25 @@ const Form = styled.form`
                 color: #a3951f;
                 font-size: 0.9rem;
             }
+            .info_error {
+                font-size: 0.78rem;
+            }
         }
     }
 `;
 
 function RegisterPage(props) {
-    const [values, setValues] = useState({
-        email: "",
-        name: "",
-        password: "",
-        confirm_password: "",
-    });
-    const [errorMsg, setErrorMsg] = useState({
-        target_name: "",
-        message: "",
-    });
+    const { register, watch, errors, setValue, handleSubmit } = useForm();
+    const passwordRef = useRef();
+    // console.log(watch("email"));
+    passwordRef.current = watch("password");
+
     const inputBox = useRef();
     const btnSubmit = useRef();
-    const dispatch = useDispatch();
-
-    const { email, name, password, confirm_password } = values;
-    const { target_name, message } = errorMsg;
+    // const dispatch = useDispatch();
 
     const onChange = (e) => {
-        const { name, value } = e.target;
-
-        setValues({
-            ...values,
-            [name]: value,
-        });
+        const { value } = e.target;
 
         // input의 길이가 0이싱이면 삭제버튼이 나타나고 focus 효과
         if (value.length > 0) {
@@ -132,10 +126,10 @@ function RegisterPage(props) {
 
         // 가입완료 버튼 활성화
         if (
-            email.length > 10 &&
-            password.length > 7 &&
-            confirm_password.length > 7 &&
-            values.name.length > 3
+            // watch("email").length > 10 &&
+            watch("password").length > 7 &&
+            watch("confirm_password").length > 7 &&
+            watch("name").length > 3
         ) {
             btnSubmit.current.classList.add("enable");
             btnSubmit.current.disabled = false;
@@ -158,62 +152,18 @@ function RegisterPage(props) {
 
         // 삭제 버튼의 앞에 위치한 input에 접근해서 value를 초기화
         const { name } = e.target.previousSibling;
-
-        setValues({
-            ...values,
-            [name]: "",
-        });
+        setValue(name, "");
     };
 
-    const onSubmit = (e) => {
-        e.preventDefault();
-        const chk_name = /([^가-힣\x20a-zA-Z])/i;
+    const onSubmit = async (data) => {
+        // e.preventDefault();
+        console.log(data);
 
-        if (chk_name.test(name)) {
-            return setErrorMsg({
-                ...errorMsg,
-                target_name: "name",
-                message: "닉네임은 한글과 영문만 입력 가능합니다.",
-            });
-        }
-        if (password.search(/\s/) !== -1) {
-            return setErrorMsg({
-                ...errorMsg,
-                target_name: "password",
-                message: "비밀번호에 공백을 입력하실 수 없습니다.",
-            });
-        }
-        if (password !== confirm_password) {
-            return setErrorMsg({
-                ...errorMsg,
-                target_name: "confirm_password",
-                message:
-                    "입력한 비밀번호와 재입력한 비밀번호가 일치하지 않습니다. 다시 확인해 주세요.",
-            });
-        }
-
-        let body = {
-            email: email,
-            name: name,
-            password: password,
-        };
-        console.log(body);
-        dispatch(registerUser(body)).then((response) => {
-            if (response.payload.success) {
-                props.history.push("/login");
-            } else {
-                return setErrorMsg({
-                    ...errorMsg,
-                    target_name: "register_fail",
-                    message:
-                        "회원가입에 실패하였습니다.",
-                });
-            }
-        });
+        let createUser = await firebase.auth().createUserWithEmailAndPassword();
     };
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
             <h1>프리지아톡 정보를 입력해 주세요.</h1>
             <section>
                 <ul className="input_box ph_text_field" ref={inputBox}>
@@ -223,12 +173,20 @@ function RegisterPage(props) {
                             <input
                                 name="email"
                                 type="email"
-                                value={email}
+                                // ref={register({
+                                //     required: true,
+                                //     pattern: /$\S+@\S+$/i,
+                                // })}
                                 placeholder="이메일 입력"
                                 onChange={onChange}
                             />
                             <button className="btn_del" onClick={inputReset} />
                         </div>
+                        {/* {errors.email && errors.email && (
+                            <p className="info_error">
+                                유효한 이메일 주소가 아닙니다.
+                            </p>
+                        )} */}
                     </li>
                     <li>
                         <label>비밀번호</label>
@@ -236,22 +194,33 @@ function RegisterPage(props) {
                             <input
                                 name="password"
                                 type="password"
-                                value={password}
-                                minLength="8"
-                                maxLength="20"
+                                ref={register({
+                                    required: true,
+                                    minLength: 8,
+                                    maxLength: 20,
+                                })}
                                 placeholder="비밀번호(8~20자리)"
                                 onChange={onChange}
                             />
                             <button className="btn_del" onClick={inputReset} />
                         </div>
-                        {target_name === "password" && (
-                            <p className="info_error">{message}</p>
-                        )}
+                        <p className="info_error">
+                            {errors.password &&
+                                errors.password.type === "required" &&
+                                "비밀번호를 입력해주세요."}
+                            {errors.password &&
+                                errors.password.type === "maxLength" &&
+                                "비밀번호는 8-20자리로 입력해주세요."}
+                        </p>
                         <div>
                             <input
                                 name="confirm_password"
                                 type="password"
-                                value={confirm_password}
+                                ref={register({
+                                    required: true,
+                                    validate: (value) =>
+                                        value === value.current,
+                                })}
                                 minLength="8"
                                 maxLength="20"
                                 placeholder="비밀번호 재입력"
@@ -259,9 +228,14 @@ function RegisterPage(props) {
                             />
                             <button className="btn_del" onClick={inputReset} />
                         </div>
-                        {target_name === "confirm_password" && (
-                            <p className="info_error">{message}</p>
-                        )}
+                        <p className="info_error">
+                            {errors.confirm_password &&
+                                errors.confirm_password.type === "required" &&
+                                "비밀번호를 재입력해주세요."}
+                            {errors.confirm_password &&
+                                errors.confirm_password.type === "validate" &&
+                                "입력한 비밀번호와 재입력한 비밀번호가 일치하지 않습니다."}
+                        </p>
                     </li>
                     <li>
                         <label>닉네임</label>
@@ -269,25 +243,29 @@ function RegisterPage(props) {
                             <input
                                 name="name"
                                 type="text"
-                                value={name}
-                                maxLength="20"
+                                ref={register({
+                                    required: true,
+                                    maxLength: 20,
+                                })}
                                 placeholder="닉네임을 입력해 주세요."
                                 onChange={onChange}
                             />
                             <button className="btn_del" onClick={inputReset} />
                         </div>
-                        {target_name === "name" && (
-                            <p className="info_error">{message}</p>
-                        )}
+                        <p className="info_error">
+                            {errors.name &&
+                                errors.name.type === "required" &&
+                                "닉네임을 입력해주세요."}
+                            {errors.name &&
+                                errors.name.type === "maxLength" &&
+                                "닉네임은 20자리까지 입력가능합니다."}
+                        </p>
                     </li>
                     <li>
                         <button ref={btnSubmit} className="btn_submit" disabled>
                             가입 완료
                         </button>
                         <Link to="/login">처음으로 돌아가기 </Link>
-                        {target_name === "register_fail" && (
-                            <p className="info_error">{message}</p>
-                        )}
                     </li>
                 </ul>
             </section>

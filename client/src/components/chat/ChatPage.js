@@ -3,7 +3,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-function LandingPage(props) {
+function ChatPage(props) {
     const user = useSelector((state) => state.user.userData);
 
     const onClickHandler = () => {
@@ -15,13 +15,12 @@ function LandingPage(props) {
             }
         });
     };
-
     return (
         <div>
-            <h2>시작 페이지</h2>
+            <h1>ChatPage</h1>
             <button onClick={onClickHandler}>logout</button>
         </div>
     );
 }
 
-export default withRouter(LandingPage);
+export default withRouter(ChatPage);

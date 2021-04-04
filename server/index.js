@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const port = 5000;
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 
@@ -11,10 +11,10 @@ const { auth } = require("./middleware/auth");
 const { User } = require("./models/User");
 
 //applcation/x-www-form/urlencoded의 데이터를 분석해서 가져온다.
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 //application/json의 데이터를 분석해서 가져온다.
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(cookieParser());
 
 mongoose
@@ -29,10 +29,6 @@ mongoose
 
 app.get("/", function (req, res) {
     res.send("hello world");
-});
-
-app.get("/api/hello", function (req, res) {
-    res.send("안녕하세요");
 });
 
 //회원가입
@@ -60,7 +56,7 @@ app.post("/api/users/login", (req, res) => {
         if (!user) {
             return res.json({
                 loginSuccess: false,
-                message: "제공된 이메일에 해당하는 유저가 없습니다.",
+                message: "프리지아톡 계정(이메일)을 다시 확인해 주세요.",
             });
         }
 
@@ -69,7 +65,7 @@ app.post("/api/users/login", (req, res) => {
             if (!isMatch) {
                 return res.json({
                     loginSuccess: false,
-                    message: "비밀번호가 틀렸습니다.",
+                    message: "비밀번호를 다시 확인해 주세요.",
                 });
             }
 
@@ -94,8 +90,8 @@ app.get("/api/users/auth", auth, (req, res) => {
         isAuth: true,
         email: req.user.email,
         name: req.user.name,
-        lastname: req.user.lastname,
         role: req.user.role,
+        register_date: req.user.register_date,
         image: req.user.image,
     });
 });
@@ -111,58 +107,37 @@ app.get("/api/users/logout", auth, (req, res) => {
 
 app.listen(port, () => console.log(`Example app listening on port ${port}`));
 
-app.post("/api/users/edit_password", auth, async (req, res) => {
-    // const { previousPassword, password, rePassword, userId } = req.body;
+app.post("/api/users/:userName/pwEdit", async (req, res) => {
     console.log(req);
+    // try {
+    //     const { previousPassword, password, rePassword, userId } = req.body;
+    //     const result = await User.findById(userId, "password");
+
+    //     bcrypt.compare(previousPassword, result.password).then((isMatch) => {
+    //         if (!isMatch) {
+    //             return res.status(400).json({
+    //                 match_msg: "기존 비밀번호와 일치하지 않습니다",
+    //             });
+    //         } else {
+    //             if (password === rePassword) {
+    //                 bcrypt.genSalt(10, (err, salt) => {
+    //                     bcrypt.hash(password, salt, (err, hash) => {
+    //                         if (err) throw err;
+    //                         result.password = hash;
+    //                         result.save();
+    //                     });
+    //                 });
+    //                 res.status(200).json({
+    //                     success_msg: "비밀번호 업데이트에 성공했습니다",
+    //                 });
+    //             } else {
+    //                 res.status(400).json({
+    //                     fail_msg: "새로운 비밀번호가 일치하지 않습니다",
+    //                 });
+    //             }
+    //         }
+    //     });
+    // } catch (e) {
+    //     // console.log('profile : ', e)
+    // }
 });
-
-/*
-npm init
-npm install express --save
-npm install mongoose --save
-npm install body-parser --save
-npm install bcrypt --save
-npm install jsonwebtoken --save
-npm install cookie-parser --save
-
-model : 스키마를 감싸주는 역할
-bcrypt: 비밀번호 암호화
-*/
-
-/*
-git 설치
-
-git init : git 저장소를 만들어 주는 역할
-git status : git 상태 
-    1. working directory : 아무것도 하지 않음 처음상태, 
-    2. Stagin Area
-    3. Git repository (local)
-    4. Git repository (remote)
-git add .
-git commit -m "메시지" : 저장소에 올리기
-git push origin master
-
-.gitignore 파일을 만듬 : node_modules 폴더를 빼기 위해
-git rm --cached : 모든 정보 삭제 (git rm --cached node_modules -r)
-
-*/
-
-/*
-로그인 라우터 만들기
-
-1. 데이터 베이스에서 요청한 e-mail찾기
-2. 데이터 베이스에서 요청한 e-mail이 있다면 비밀번호가 같은지 확인
-3. 비밀번호까지 같다면 token을 생성
-
-
-로그인 인증
-
-1. 쿠키에 저장된 토큰을 서버에서 가져와서 복호화를 한다.
-2. 복호화를 하면 user id가 나오는데 이를 이용해서 db user Collection에서 유저를 찾은 후 쿠키에서 받아온 토큰이 유저도 갖고있는지 확인
-
-
-로그아웃 기능
-1. 로그아웃 하려는 유저를 db에서 찾는다.
-2. 그 유저의 토큰을 지워준다.
-
-*/

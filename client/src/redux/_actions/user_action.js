@@ -37,7 +37,6 @@ export function editPassword() {
         .post("/api/users/edit_password")
         .then((response) => response.data);
 
-    console.log(request);
     return {
         type: EDIT_PASSWORD,
         payload: request,

@@ -15,16 +15,18 @@ const createStoreWidthMiddleware = applyMiddleware(
 )(createStore);
 
 ReactDOM.render(
-    <Provider
-        store={createStoreWidthMiddleware(
-            Reducer,
-            window.__REDUX_DEVTOOLS_EXTENSION__ &&
-                window.__REDUX_DEVTOOLS_EXTENSION__()
-        )}
-    >
-        <React.StrictMode>
-            <App />
-        </React.StrictMode>
-    </Provider>,
+    <React.StrictMode>
+        <Provider
+            store={createStoreWidthMiddleware(
+                Reducer,
+                window.__REDUX_DEVTOOLS_EXTENSION__ &&
+                    window.__REDUX_DEVTOOLS_EXTENSION__()
+            )}
+        >
+            <React.StrictMode>
+                <App />
+            </React.StrictMode>
+        </Provider>
+    </React.StrictMode>,
     document.getElementById("root")
 );

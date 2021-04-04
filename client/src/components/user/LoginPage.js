@@ -1,9 +1,9 @@
 import React, { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../redux/_actions/user_action";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import styled from "styled-components";
-import icon from "../../assets/image/talk_icon.png";
+import icon from "../../assets/images/talk_icon.png";
 
 const Form = styled.form`
     position: absolute;
@@ -33,9 +33,22 @@ const Form = styled.form`
                     font-size: 0.9rem;
                     &.password {
                         border-top: 1px solid #f3f3f3;
+                        font-weight: 900;
+                        letter-spacing: 1.5px;
+                        &::placeholder {
+                            font-weight: 400;
+                            letter-spacing: 0;
+                        }
                     }
                     &::placeholder {
                         color: #ccc;
+                    }
+                }
+                &.error {
+                    border-color: #e65f3e;
+                    border-width: 2px;
+                    & + div {
+                        margin-top: -2px;
                     }
                 }
             }
@@ -53,10 +66,28 @@ const Form = styled.form`
                 }
             }
         }
+        .info_error {
+            text-align: left;
+            width: 300px;
+            margin: 20px auto 0;
+            font-size: 0.78rem;
+        }
+    }
+`;
+
+const Ul = styled.ul`
+    position: absolute;
+    left: 0;
+    bottom: -165px;
+    width: 100%;
+    a {
+        color: #a3951f;
+        font-size: 0.9rem;
     }
 `;
 
 function LoginPage(props) {
+    const inputBox = useRef();
     const loginBtn = useRef();
     const dispatch = useDispatch();
 
@@ -64,6 +95,7 @@ function LoginPage(props) {
         email: "",
         password: "",
     });
+    const [error, setError] = useState("");
 
     const { email, password } = values;
 
@@ -85,17 +117,19 @@ function LoginPage(props) {
         };
 
         dispatch(loginUser(body)).then((response) => {
+            // console.log(response.payload.message);
             if (response.payload.loginSuccess) {
                 props.history.push("/");
             } else {
-                return alert("에러가 발생했습니다");
+                inputBox.current.classList.add("error");
+                setError(response.payload.message);
             }
         });
     };
 
     const onKeyUp = (e) => {
         // 로그인 조건: 이메일 10자리 이상 && 비밀번호 8자리 이상
-        if (email.length > 10 && password.length >= 7) {
+        if (email.length > 10 && password.length >= 8) {
             loginBtn.current.classList.add("on"); // 입력 조건 만족하면 버튼이 활성화 표시
             loginBtn.current.disabled = false; // 입력 조건 만족하면 disabled 풀림
         } else {
@@ -110,7 +144,7 @@ function LoginPage(props) {
                 <img src={icon} alt="프리지아톡 로고" />
             </header>
             <section>
-                <div className="input_box">
+                <div ref={inputBox} className="input_box">
                     <input
                         className="email"
                         name="email"
@@ -125,7 +159,7 @@ function LoginPage(props) {
                         name="password"
                         type="password"
                         value={password}
-                        minLength="8"
+                        // minLength="8"
                         maxLength="20"
                         placeholder="비밀번호"
                         onKeyUp={onKeyUp}
@@ -137,7 +171,18 @@ function LoginPage(props) {
                         로그인
                     </button>
                 </div>
+                <div className="info_error">
+                    <p>{error}</p>
+                </div>
             </section>
+            <Ul>
+                <li>
+                    <Link to="/register">회원가입</Link>
+                </li>
+                {/* <li>
+                    <Link to="/">비밀번호 재설정</Link>
+                </li> */}
+            </Ul>
         </Form>
     );
 }

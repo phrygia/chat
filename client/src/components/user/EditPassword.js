@@ -1,34 +1,41 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { editPassword } from "../../redux/_actions/user_action";
 import { withRouter } from "react-router-dom";
 
 function EditPassword(props) {
-    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user);
+    console.log(user);
 
-    const [values, setValues] = useState({
-        email: "",
+    const { userName } = useParams();
+    const [form, setValues] = useState({
+        previousPassword: "",
         password: "",
+        rePassword: "",
     });
-
-    const { email, password } = values;
-
+    const dispatch = useDispatch();
     const onChange = (e) => {
-        const { name, value } = e.target;
         setValues({
-            ...values,
-            [name]: value,
+            ...form,
+            [e.target.name]: e.target.value,
         });
     };
-    const onSubmit = (e) => {
-        e.preventDefault();
+
+    const onSubmit = async (e) => {
+        await e.preventDefault();
+        const { previousPassword, password, rePassword } = form;
+        const token = localStorage.getItem("token");
 
         let body = {
-            email: email,
             password: password,
+            rePassword: rePassword,
+            // userId: userId,
+            // userName: userName,
         };
 
         dispatch(editPassword(body)).then((response) => {
+            console.log(body);
             if (response.payload.loginSuccess) {
                 props.history.push("/");
             } else {
@@ -36,25 +43,76 @@ function EditPassword(props) {
             }
         });
     };
+
     return (
-        <form onSubmit={onSubmit}>
-            <input
-                className="email"
-                name="email"
-                type="text"
-                placeholder="프리지아톡 계정(이메일)"
-                onChange={onChange}
-            />
-            <input
-                className="password"
-                name="password"
-                type="password"
-                placeholder="비밀번호"
-                onChange={onChange}
-            />
-            <button>ResetPassword</button>
-        </form>
+        <div>
+            {/* <Helmet title={`Profile | ${userName}님의 프로필`} /> */}
+            <div>
+                <div>
+                    <div>
+                        <strong>Edit Password</strong>
+                    </div>
+                    <div>
+                        <form onSubmit={onSubmit}>
+                            <div>
+                                <label htmlFor="title">기존 비밀번호</label>
+                                <input
+                                    type="password"
+                                    name="previousPassword"
+                                    id="previousPassword"
+                                    className="form-control mb-2"
+                                    onChange={onChange}
+                                />
+                                {/* {previousMatchMsg ? (
+                                    <Alert severity="error">
+                                        {previousMatchMsg}
+                                    </Alert>
+                                ) : (
+                                    ""
+                                )} */}
+                            </div>
+                            <div>
+                                <label htmlFor="title">새로운 비밀번호</label>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    id="password"
+                                    className="form-control"
+                                    onChange={onChange}
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="title">비밀번호 확인</label>
+                                <input
+                                    type="password"
+                                    name="rePassword"
+                                    id="rePassword"
+                                    className="form-control mb-2"
+                                    onChange={onChange}
+                                />
+                                {/* {errorMsg ? (
+                                    <Alert severity="error">{errorMsg}</Alert>
+                                ) : (
+                                    ""
+                                )} */}
+                            </div>
+                            <button
+                                color="success"
+                                className="mt-4 mb-4 col-md-3 offset-9"
+                            >
+                                제출하기
+                            </button>
+                            {/* {successMsg ? (
+                                <Alert severity="success">{successMsg}</Alert>
+                            ) : (
+                                "" */}
+                            )}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
 
-export default withRouter(EditPassword);
+export default EditPassword;

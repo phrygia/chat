@@ -17,10 +17,6 @@ const userSchema = mongoose.Schema({
         type: String,
         minlength: 5,
     },
-    lastname: {
-        type: String,
-        maxlength: 50,
-    },
     role: {
         type: Number,
         default: 0,
@@ -32,6 +28,10 @@ const userSchema = mongoose.Schema({
     tokenExp: {
         //토큰 유효기간
         type: Number,
+    },
+    register_date: {
+        type: Date,
+        default: Date.now,
     },
 });
 
