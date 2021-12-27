@@ -49,6 +49,8 @@ function ChatPage() {
   const messagesRef = firebase.database().ref('messages');
   const messagesEndRef = useRef();
 
+  console.log('change1', chatFriend);
+
   useEffect(() => {
     if (chatFriend !== null) {
       addMessagesListener(chatFriend.id);
@@ -61,7 +63,7 @@ function ChatPage() {
     };
   }, [chatFriend]);
 
-  const LoadChatList = () => {
+  const LoadChatList = useCallback(() => {
     let currentChatFriendArr = [];
     let filterArr = {
       id: '',
@@ -88,25 +90,28 @@ function ChatPage() {
         }
       }
     }
-  };
+  }, []);
 
-  const addMessagesListener = async id => {
-    let messagesArr = [];
+  const addMessagesListener = useCallback(
+    async id => {
+      let messagesArr = [];
 
-    await messagesRef.child(id).on('child_added', snapshot => {
-      messagesArr.push(snapshot.val());
+      await messagesRef.child(id).on('child_added', snapshot => {
+        messagesArr.push(snapshot.val());
 
-      if (messagesArr.length > 0) {
-        const result = messagesArr.map(message => (
-          <Message key={message.timestamp} message={message} user={user} />
-        ));
-        setMessages(result);
-      }
-    });
-    setTimeout(() => {
-      scrollToBottom();
-    }, 250);
-  };
+        if (messagesArr.length > 0) {
+          const result = messagesArr.map(message => (
+            <Message key={message.timestamp} message={message} user={user} />
+          ));
+          setMessages(result);
+        }
+      });
+      setTimeout(() => {
+        scrollToBottom();
+      }, 250);
+    },
+    [messages],
+  );
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {

@@ -120,7 +120,7 @@ function EditProfile() {
         username: statusName,
       });
     }
-  }, [formValue, statusMessage, statusName, user]);
+  }, []);
 
   const onChange = e => {
     const { name, value } = e.target;
