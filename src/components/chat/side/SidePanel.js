@@ -60,25 +60,26 @@ const SettingsSharp = styled(IoSettingsSharp)`
 `;
 
 const SettingMenu = styled(Menu)`
-  li, a {
+  li,
+  a {
     font-size: 0.9rem;
     font-weight: 700;
   }
-`
+`;
 
 function SidePanel() {
   const [anchorEl, setAnchorEl] = useState(null);
-  const user = useSelector((state) => state.user.currentUser);
+  const user = useSelector(state => state.user.currentUser);
   const settingBtn = useRef();
   const usersRef = firebase.database().ref('users');
 
-  const handleClick = (event) => {
+  const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleSettingClick = (e) => {
+  const handleSettingClick = e => {
     setAnchorEl(null);
   };
   const handleLogout = () => {
@@ -99,9 +100,18 @@ function SidePanel() {
       <SettingButton onClick={handleClick} ref={settingBtn}>
         <SettingsSharp />
       </SettingButton>
-      <SettingMenu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+      <SettingMenu
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
         <MenuItem>
-          <NavLink to="/edit/profile" onClick={handleSettingClick} activeClassName="active">
+          <NavLink
+            to="/edit/profile"
+            onClick={handleSettingClick}
+            activeClassName="active"
+          >
             프로필 수정
           </NavLink>
         </MenuItem>

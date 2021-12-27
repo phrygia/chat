@@ -41,8 +41,8 @@ const Section = styled.section`
 `;
 
 function UserInfo() {
-  const user = useSelector((state) => state.user.currentUser);
-  const statusName = useSelector((state) => state.user.currentUser.statusName);
+  const user = useSelector(state => state.user.currentUser);
+  const statusName = useSelector(state => state.user.currentUser.statusName);
   const [name, setName] = useState(null);
   const { displayName, email } = user;
 

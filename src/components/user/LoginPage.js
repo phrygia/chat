@@ -121,7 +121,7 @@ function LoginPage() {
     };
   }, []);
 
-  const onChange = (e) => {
+  const onChange = e => {
     // 로그인 조건: 이메일 10자리 이상 && 비밀번호 8자리 이상
     if (watch('email').length > 10 && watch('password').length > 7) {
       setLoading(false);
@@ -132,10 +132,12 @@ function LoginPage() {
     }
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async data => {
     try {
       setLoading(true);
-      await firebase.auth().signInWithEmailAndPassword(data.email, data.password);
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(data.email, data.password);
 
       // 로그인 성공 후 친구목록으로 이동
       history.push('/');

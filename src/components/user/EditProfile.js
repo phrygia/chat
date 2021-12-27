@@ -90,9 +90,11 @@ const Form = styled.form`
 `;
 
 function EditProfile() {
-  const user = useSelector((state) => state.user.currentUser);
-  const statusMessage = useSelector((state) => state.user.currentUser.statusMessage);
-  const statusName = useSelector((state) => state.user.currentUser.statusName);
+  const user = useSelector(state => state.user.currentUser);
+  const statusMessage = useSelector(
+    state => state.user.currentUser.statusMessage,
+  );
+  const statusName = useSelector(state => state.user.currentUser.statusName);
   const usersRef = firebase.database().ref('users');
   const [formValue, setFormValue] = useState({
     status: statusMessage ? statusMessage : '',
@@ -118,9 +120,9 @@ function EditProfile() {
         username: statusName,
       });
     }
-  }, []);
+  }, [formValue, statusMessage, statusName, user]);
 
-  const onChange = (e) => {
+  const onChange = e => {
     const { name, value } = e.target;
     setFormValue({
       ...formValue,
@@ -128,12 +130,12 @@ function EditProfile() {
     });
   };
 
-  const handleOpenImage = (e) => {
+  const handleOpenImage = e => {
     e.preventDefault();
     changeImageRef.current.click();
   };
 
-  const handleChangeImage = (e) => {
+  const handleChangeImage = e => {
     let reader = new FileReader();
     let files = e.target.files[0];
 
@@ -150,11 +152,13 @@ function EditProfile() {
     reader.readAsDataURL(files);
   };
 
-  const handleEditProfile = async (e) => {
+  const handleEditProfile = async e => {
     e.preventDefault();
     try {
       // 상태메시지 수정+ 이름 수정
-      await usersRef.child(user.uid).update({ statusMessage: status, name: username });
+      await usersRef
+        .child(user.uid)
+        .update({ statusMessage: status, name: username });
 
       // 프로필 수정한다면
       if (file !== null) {
@@ -169,7 +173,9 @@ function EditProfile() {
         let downloadUrl = await uploadTask.ref.getDownloadURL();
 
         // 프로필 이미지 수정
-        await firebase.auth().currentUser.updateProfile({ photoURL: downloadUrl });
+        await firebase
+          .auth()
+          .currentUser.updateProfile({ photoURL: downloadUrl });
         await usersRef.child(user.uid).update({ image: downloadUrl });
 
         dispatch(changeImage(downloadUrl));
@@ -203,7 +209,11 @@ function EditProfile() {
                 ref={changeImageRef}
                 style={{ display: 'none' }}
               />
-              <Avatar alt={user.name} src={user && src} className="profile_img" />
+              <Avatar
+                alt={user.name}
+                src={user && src}
+                className="profile_img"
+              />
               <button type="button" onClick={handleOpenImage}>
                 <ImCamera />
               </button>

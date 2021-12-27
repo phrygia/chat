@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import { useHistory, Link } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import styled from 'styled-components'
-import { Avatar } from '@material-ui/core'
-import { BsPersonPlus } from 'react-icons/bs'
-import { AiOutlineSearch } from 'react-icons/ai'
-import firebase from '../../firebase'
-import { loadFriendsList } from '../../redux/_actions/user_action'
-import { setCurrentChatRoom } from '../../redux/_actions/chat_action'
-import SearchFriends from './SearchFriends'
-import Search from '../chat/main/Search'
+import React, { useState, useEffect } from 'react';
+import { useHistory, Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import styled from 'styled-components';
+import { Avatar } from '@material-ui/core';
+import { BsPersonPlus } from 'react-icons/bs';
+import { AiOutlineSearch } from 'react-icons/ai';
+import firebase from '../../firebase';
+import { loadFriendsList } from '../../redux/_actions/user_action';
+import SearchFriends from './SearchFriends';
+import Search from '../chat/talk/Search';
+import defaultIcon from '../../assets/images/default_icon.png';
 
 const Section = styled.section`
   a,
@@ -22,7 +22,7 @@ const Section = styled.section`
     &:hover {
       background-color: #f2f2f2;
     }
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     strong {
       color: #262626;
       font-weight: 500;
@@ -49,7 +49,7 @@ const Section = styled.section`
       flex-shrink: 0;
       line-height: 1;
       user-select: none;
-      justify-content: center;    
+      justify-content: center;
       overflow: hidden;
       position: relative;
       width: 54px;
@@ -81,7 +81,7 @@ const Section = styled.section`
       }
     }
   }
-`
+`;
 
 const FriendsLists = styled.div`
   .talk_title {
@@ -109,64 +109,71 @@ const FriendsLists = styled.div`
       }
     }
   }
-`
+`;
 
 function FriendsList() {
-  const [renderList, setRenderList] = useState([])
-  const [myFriendsList, setMyFriendsList] = useState([])
-  const [friendsList, setFriendsList] = useState([])
-  const [search, setSearch] = useState(false)
-  const [searchStatus, setSearchStatus] = useState(false)
-  const [open, setOpen] = useState(false)
-  const user = useSelector((state) => state.user.currentUser)
-  const { allFriendsList } = user ? user : []
-  const usersRef = firebase.database().ref('users')
-  const dispatch = useDispatch()
-  const history = useHistory()
+  const [renderList, setRenderList] = useState([]);
+  const [myFriendsList, setMyFriendsList] = useState([]);
+  const [friendsList, setFriendsList] = useState([]);
+  const [search, setSearch] = useState(false);
+  const [searchStatus, setSearchStatus] = useState(false);
+  const [open, setOpen] = useState(false);
+  const user = useSelector(state => state.user.currentUser);
+  const { allFriendsList } = user ? user : [];
+  const usersRef = firebase.database().ref('users');
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   useEffect(() => {
     if (user && allFriendsList) {
-      let friendsArr = []
-      let arr = []
-      let uniqueArr = []
-      usersRef.child(`${user.uid}/friends`).on('child_added', (snapshot) => {
-        friendsArr.push(snapshot.val())
-        dispatch(loadFriendsList(friendsArr))
+      let friendsArr = [];
+      let arr = [];
+      let uniqueArr = [];
+      usersRef.child(`${user.uid}/friends`).on('child_added', snapshot => {
+        friendsArr.push(snapshot.val());
+        dispatch(loadFriendsList(friendsArr));
         const result = friendsArr.map((val, index) => {
           // all user 목록에서 이미지 가져오기
-          let getInfo = []
-          allFriendsList.length > 0 && allFriendsList.filter((list) => {
-            if (list.id === val.id) return (getInfo = list)
-          })
-          arr.push(getInfo)
-          arr.forEach((val) => {
-            if (!uniqueArr.includes(val)) uniqueArr.push(val)
-          })
-          setMyFriendsList(uniqueArr)
+          let getInfo = [];
+          allFriendsList &&
+            allFriendsList.filter(list => {
+              if (list.id === val.id) return (getInfo = list);
+            });
+          arr.push(getInfo);
+          arr.forEach(val => {
+            if (!uniqueArr.includes(val)) uniqueArr.push(val);
+          });
+          setMyFriendsList(uniqueArr);
           return (
-            <li key={val.id + index} onDoubleClick={() => changeChatRoom(val, getInfo)}>
+            <li
+              key={val.id + index}
+              onDoubleClick={() => changeChatRoom(val, getInfo)}
+            >
               <Avatar src={getInfo.image} alt={getInfo.name} />
               <div>
                 <strong>{getInfo.name}</strong>
                 {getInfo.statusMessage && <p>{getInfo.statusMessage}</p>}
               </div>
             </li>
-          )
-        })
-        setRenderList(result)
-        setFriendsList(result)
-      })
+          );
+        });
+        setRenderList(result);
+        setFriendsList(result);
+      });
     }
     return () => {
-      if (user) usersRef.off()
-    }
-  }, [allFriendsList])
+      if (user) usersRef.off();
+    };
+  }, [allFriendsList, dispatch]);
 
   const changeChatRoom = async (val, info) => {
-    const currentUser = user.uid
-    const userId = val.id
+    const currentUser = user.uid;
+    const userId = val.id;
 
-    const chatRoomId = userId > currentUser ? `${userId}/${currentUser}` : `${currentUser}/${userId}`
+    const chatRoomId =
+      userId > currentUser
+        ? `${userId}/${currentUser}`
+        : `${currentUser}/${userId}`;
 
     const chatRoomData = {
       id: chatRoomId,
@@ -175,71 +182,81 @@ function FriendsList() {
       createdBy: {
         name: chatRoomId,
       },
-    }
+    };
 
-    dispatch(setCurrentChatRoom(chatRoomData, true))
+    // dispatch(setCurrentChatRoom(chatRoomData, true));
 
-    await usersRef.child(currentUser).update({ currentChatFriend: chatRoomData })
-    history.push(`/chat/${info.name}`)
-  }
+    await usersRef
+      .child(currentUser)
+      .update({ currentChatFriend: chatRoomData });
+    history.push(`/chat/${info.name}`);
+  };
 
   const handleClickOpen = () => {
-    setOpen(true)
-  }
+    setOpen(true);
+  };
   const handleClose = () => {
-    setOpen(false)
-  }
-  const onChange = (e) => {
+    setOpen(false);
+  };
+  const onChange = e => {
     if (e.target.value.length === 0) {
-      renderDirectMeesage(renderList, false, e.target.value)
+      renderDirectMeesage(renderList, false, e.target.value);
     } else {
-      renderDirectMeesage(myFriendsList, true, e.target.value)
+      renderDirectMeesage(myFriendsList, true, e.target.value);
     }
-  }
+  };
 
   const handleSearchList = () => {
-    setSearch(!search)
-  }
+    setSearch(!search);
+  };
 
   const handleSearchClose = () => {
-    setSearch(!search)
-    setSearchStatus(false)
-    setFriendsList(renderList)
-  }
+    setSearch(!search);
+    setSearchStatus(false);
+    setFriendsList(renderList);
+  };
 
   const renderDirectMeesage = (users, isSearch, schWord) => {
     if (users && users.length > 0) {
       // 검색
       if (isSearch) {
-        const regex = new RegExp(schWord, 'gi')
+        const regex = new RegExp(schWord, 'gi');
         const result = users.map((user, index) => {
           if (user.name && user.name.match(regex)) {
             // console.log(user)
-            const finds = allFriendsList.filter((val) => {
-              if (val.id === user.id) return val
-            })
+            const finds = allFriendsList.filter(val => {
+              if (val.id === user.id) return val;
+            });
             return (
-              <li key={user.id + index} onDoubleClick={() => changeChatRoom(user)}>
+              <li
+                key={user.id + index}
+                onDoubleClick={() => changeChatRoom(user)}
+              >
                 <Avatar src={finds[0].image} alt={finds[0].name} />
                 <div>
                   <strong>{finds[0].name}</strong>
                   {finds[0].statusMessage && <p>{finds[0].statusMessage}</p>}
                 </div>
               </li>
-            )
+            );
           }
-        })
-        setSearchStatus(true)
-        setFriendsList(result)
+        });
+        setSearchStatus(true);
+        setFriendsList(result);
       } else {
-        setSearchStatus(false)
-        setFriendsList(renderList)
+        setSearchStatus(false);
+        setFriendsList(renderList);
       }
     }
-  }
+  };
 
   return (
-    <FriendsLists className="talk_box list" speed={1.5} horizontal={false} smoothScrolling={true}>
+    <FriendsLists
+      className="talk_box list"
+      speed={1.5}
+      horizontal={false}
+      smoothScrolling={true}
+    >
       <header className="talk_title">
         <h1>친구</h1>
         <button onClick={handleSearchList} title="검색">
@@ -249,16 +266,33 @@ function FriendsList() {
           <BsPersonPlus />
         </button>
       </header>
-      {search && <Search placeholder="이름으로 검색" onChange={onChange} onClick={handleSearchClose} />}
-      <SearchFriends open={open} close={handleClose} friendsList={friendsList} />
+      {search && (
+        <Search
+          placeholder="이름으로 검색"
+          onChange={onChange}
+          onClick={handleSearchClose}
+        />
+      )}
+      <SearchFriends
+        open={open}
+        close={handleClose}
+        friendsList={friendsList}
+      />
       <Section>
         <article className="me">
           <Link to="/edit/profile">
             <div className="img_box">
-              <img alt={user && user.displayName} src={user ? user.photoURL : 'https://raw.githubusercontent.com/phrygia/chat/master/client/src/assets/images/default_icon.png'} />
+              <img
+                alt={user && user.displayName}
+                src={user ? user.photoURL : defaultIcon}
+              />
             </div>
             <div>
-              <strong>{user && user.statusName ? user.statusName : user && user.displayName}</strong>
+              <strong>
+                {user && user.statusName
+                  ? user.statusName
+                  : user && user.displayName}
+              </strong>
               <p>{user && user.statusMessage}</p>
             </div>
           </Link>
@@ -277,7 +311,7 @@ function FriendsList() {
         </article>
       </Section>
     </FriendsLists>
-  )
+  );
 }
 
-export default FriendsList
+export default FriendsList;

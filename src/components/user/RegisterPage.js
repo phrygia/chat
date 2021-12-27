@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react'
-import { Link } from 'react-router-dom'
-import styled from 'styled-components'
-import close from '../../assets/images/close.png'
-import { useForm } from 'react-hook-form'
-import firebase from '../../firebase'
+import React, { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import close from '../../assets/images/close.png';
+import { useForm } from 'react-hook-form';
+import firebase from '../../firebase';
+import defaultIcon from '../../assets/images/default_icon.png';
 
 const Form = styled.form`
   height: 100%;
@@ -87,83 +88,92 @@ const Form = styled.form`
       }
     }
   }
-`
+`;
 
 function RegisterPage() {
-  const { register, watch, errors, clearErrors, setValue, handleSubmit } = useForm()
-  const [loading, setLoading] = useState(false)
-  const [errorSubmit, setErrorSubmit] = useState('')
-  const [enable, setEnable] = useState('')
-  const passwordRef = useRef()
-  passwordRef.current = watch('password')
+  const { register, watch, errors, clearErrors, setValue, handleSubmit } =
+    useForm();
+  const [loading, setLoading] = useState(false);
+  const [errorSubmit, setErrorSubmit] = useState('');
+  const [enable, setEnable] = useState('');
+  const passwordRef = useRef();
+  passwordRef.current = watch('password');
 
-  const inputBox = useRef()
-  const btnSubmit = useRef()
+  const inputBox = useRef();
+  const btnSubmit = useRef();
 
-  const onChange = (e) => {
-    const { value } = e.target
+  const onChange = e => {
+    const { value } = e.target;
 
     // input의 길이가 0이싱이면 삭제버튼이 나타나고 focus 효과
     if (value.length > 0) {
-      e.target.parentNode.classList.add('focus')
-      e.target.nextSibling.style.display = 'block'
+      e.target.parentNode.classList.add('focus');
+      e.target.nextSibling.style.display = 'block';
     } else {
-      e.target.parentNode.classList.remove('focus')
-      e.target.nextSibling.style.display = 'none'
+      e.target.parentNode.classList.remove('focus');
+      e.target.nextSibling.style.display = 'none';
     }
 
     // 가입완료 버튼 활성화
-    if (watch('password').length > 7 && watch('confirm_password').length > 7 && watch('name').length > 3) {
-      setEnable('enable')
-      setLoading(false)
+    if (
+      watch('password').length > 7 &&
+      watch('confirm_password').length > 7 &&
+      watch('name').length > 3
+    ) {
+      setEnable('enable');
+      setLoading(false);
     } else {
-      setEnable('')
-      setLoading(true)
+      setEnable('');
+      setLoading(true);
     }
-  }
-  
-  const inputReset = (e) => {
-    e.preventDefault()
+  };
+
+  const inputReset = e => {
+    e.preventDefault();
 
     // 클릭되면 버튼 사라짐, focus ui 효과 사라짐
-    e.target.style.display = 'none'
-    e.target.parentNode.classList.remove('focus')
+    e.target.style.display = 'none';
+    e.target.parentNode.classList.remove('focus');
 
     // 클릭되면 가입완료 버튼 disable 처리됨
-    setEnable('')
-    setLoading(true)
+    setEnable('');
+    setLoading(true);
 
     // 삭제 버튼의 앞에 위치한 input에 접근해서 value 및 에러를 초기화
-    const { name } = e.target.previousSibling
-    setValue(name, '')
-    clearErrors(name, '')
-  }
+    const { name } = e.target.previousSibling;
+    setValue(name, '');
+    clearErrors(name, '');
+  };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async data => {
     try {
-      setLoading(true)
-      let createUser = await firebase.auth().createUserWithEmailAndPassword(data.email, data.password)
+      setLoading(true);
+      let createUser = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(data.email, data.password);
 
       await createUser.user.updateProfile({
         displayName: data.name,
-        photoURL: 'https://raw.githubusercontent.com/phrygia/chat/master/client/src/assets/images/default_icon.png',
-      })
+        photoURL: defaultIcon,
+      });
 
       // firebase DB save - uid: user의 유니크한 id
       await firebase.database().ref('users').child(createUser.user.uid).set({
         name: createUser.user.displayName,
         image: createUser.user.photoURL,
         email: createUser.user.email,
-      })
+      });
 
-      setErrorSubmit('성공적으로 회원가입이 되었습니다. 로그인 페이지로 이동합니다.')
+      setErrorSubmit(
+        '성공적으로 회원가입이 되었습니다. 로그인 페이지로 이동합니다.',
+      );
     } catch (error) {
-      setErrorSubmit(error.message)
+      setErrorSubmit(error.message);
     } finally {
-      setLoading(false)
-      setEnable('')
+      setLoading(false);
+      setEnable('');
     }
-  }
+  };
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
@@ -184,7 +194,9 @@ function RegisterPage() {
               />
               <span className="btn_del" onClick={inputReset} />
             </div>
-            {errors.email && <p className="info_error">유효한 이메일 주소가 아닙니다.</p>}
+            {errors.email && (
+              <p className="info_error">유효한 이메일 주소가 아닙니다.</p>
+            )}
           </li>
           <li>
             <label>비밀번호</label>
@@ -203,8 +215,12 @@ function RegisterPage() {
               <span className="btn_del" onClick={inputReset} />
             </div>
             <p className="info_error">
-              {errors.password && errors.password.type === 'required' && '비밀번호를 입력해주세요.'}
-              {errors.password && errors.password.type === 'maxLength' && '비밀번호는 8-20자리로 입력해주세요.'}
+              {errors.password &&
+                errors.password.type === 'required' &&
+                '비밀번호를 입력해주세요.'}
+              {errors.password &&
+                errors.password.type === 'maxLength' &&
+                '비밀번호는 8-20자리로 입력해주세요.'}
             </p>
             <div>
               <input
@@ -212,7 +228,7 @@ function RegisterPage() {
                 type="password"
                 ref={register({
                   required: true,
-                  validate: (value) => value === passwordRef.current,
+                  validate: value => value === passwordRef.current,
                 })}
                 minLength="8"
                 maxLength="20"
@@ -222,7 +238,9 @@ function RegisterPage() {
               <span className="btn_del" onClick={inputReset} />
             </div>
             <p className="info_error">
-              {errors.confirm_password && errors.confirm_password.type === 'required' && '비밀번호를 재입력해주세요.'}
+              {errors.confirm_password &&
+                errors.confirm_password.type === 'required' &&
+                '비밀번호를 재입력해주세요.'}
               {errors.confirm_password &&
                 errors.confirm_password.type === 'validate' &&
                 '입력한 비밀번호와 재입력한 비밀번호가 일치하지 않습니다.'}
@@ -244,12 +262,20 @@ function RegisterPage() {
               <span className="btn_del" onClick={inputReset} />
             </div>
             <p className="info_error">
-              {errors.name && errors.name.type === 'required' && '닉네임을 입력해주세요.'}
-              {errors.name && errors.name.type === 'maxLength' && '닉네임은 20자리까지 입력가능합니다.'}
+              {errors.name &&
+                errors.name.type === 'required' &&
+                '닉네임을 입력해주세요.'}
+              {errors.name &&
+                errors.name.type === 'maxLength' &&
+                '닉네임은 20자리까지 입력가능합니다.'}
             </p>
           </li>
           <li>
-            <button ref={btnSubmit} className={`btn_submit ${enable}`} disabled={loading}>
+            <button
+              ref={btnSubmit}
+              className={`btn_submit ${enable}`}
+              disabled={loading}
+            >
               가입 완료
             </button>
             {errorSubmit && <p className="info_error">{errorSubmit}</p>}
@@ -258,7 +284,7 @@ function RegisterPage() {
         </ul>
       </section>
     </Form>
-  )
+  );
 }
 
-export default RegisterPage
+export default RegisterPage;

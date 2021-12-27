@@ -7,26 +7,26 @@ import {
   LOAD_STATUS_NAME,
   LOAD_FRIENDS_LIST,
   LOAD_ALL_FRIENDS_LIST,
-  LOAD_ALARM_STATUS
-} from '../types'
+  LOAD_ALARM_STATUS,
+} from '../types';
 
 const initialState = {
   isLoading: true,
   currentUser: null,
-}
+};
 
 export default function (state = initialState, action) {
   switch (action.type) {
     case LOGIN_USER:
-      return { ...state, isLoading: false, currentUser: action.payload }
+      return { ...state, isLoading: false, currentUser: action.payload };
     case LOGOUT_USER:
-      return { ...state, isLoading: false, currentUser: null }
+      return { ...state, isLoading: false, currentUser: null };
     case CHANGE_IMAGE:
       return {
         ...state,
         isLoading: false,
         currentUser: { ...state.currentUser, photoURL: action.payload },
-      }
+      };
     case CHANGE_PROFILE:
       return {
         ...state,
@@ -36,7 +36,7 @@ export default function (state = initialState, action) {
           statusMessage: action.payload,
           displayName: action.displayName,
         },
-      }
+      };
     case LOAD_STATUS_MESSAGE:
       return {
         ...state,
@@ -45,7 +45,7 @@ export default function (state = initialState, action) {
           ...state.currentUser,
           statusMessage: action.payload,
         },
-      }
+      };
     case LOAD_STATUS_NAME:
       return {
         ...state,
@@ -54,7 +54,7 @@ export default function (state = initialState, action) {
           ...state.currentUser,
           statusName: action.payload,
         },
-      }
+      };
     case LOAD_FRIENDS_LIST:
       return {
         ...state,
@@ -63,7 +63,7 @@ export default function (state = initialState, action) {
           ...state.currentUser,
           myFriendsList: action.payload,
         },
-      }
+      };
     case LOAD_ALL_FRIENDS_LIST:
       return {
         ...state,
@@ -72,7 +72,7 @@ export default function (state = initialState, action) {
           ...state.currentUser,
           allFriendsList: action.payload,
         },
-      }
+      };
     case LOAD_ALARM_STATUS:
       return {
         ...state,
@@ -81,8 +81,8 @@ export default function (state = initialState, action) {
           ...state.currentUser,
           alarmStatus: action.payload,
         },
-      }
+      };
     default:
-      return state
+      return state;
   }
 }
