@@ -38,24 +38,27 @@ const Ul = styled.ul`
     display: flex;
     cursor: pointer;
     align-items: center;
-    padding: 7px 20px;
+    padding: 8px 20px;
     &:hover {
       background-color: #f2f2f2;
     }
     font-size: 0.8rem;
     strong {
       color: #262626;
-      font-weight: 500;
+      font-size: 14px;
     }
     p {
+      margin-top: 5px;
       color: #737373;
+      font-size: 12px;
     }
     [class$='circle'] {
-      width: 50px;
-      height: 50px;
-      margin-right: 10px;
-      border-radius: 100%;
+      width: 70px;
+      height: 70px;
+      margin-right: 15px;
+      border-radius: 20px;
       border: 1px solid #f2f2f2;
+      background-color: #fff;
     }
   }
 `;
@@ -63,7 +66,7 @@ const Ul = styled.ul`
 function ChatList() {
   const [userRender, setUserRender] = useState();
   const [usersList, setUsersList] = useState();
-  const [search, setSearch] = useState(false);
+  const [search, setSearch] = useState(true);
   const [selectedRoom, setSelecedtRoom] = useState('');
   const loginUser = useSelector(state => state.user.currentUser);
   const allFriendsList = useSelector(

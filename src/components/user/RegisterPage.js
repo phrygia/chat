@@ -9,16 +9,21 @@ import defaultIcon from '../../assets/images/default_icon.png';
 const Form = styled.form`
   height: 100%;
   overflow-y: auto;
-  padding-top: 95px;
+  padding-top: 40px;
+  .register_tit {
+    padding: 20px 0;
+    font-size: 1.6rem;
+    text-align: center;
+  }
   .input_box {
     li {
-      width: 355px;
-      margin: 10px auto 20px;
+      width: 330px;
+      margin: 40px auto 20px;
       label {
         display: block;
         margin-bottom: 8px;
-        font-size: 0.875rem;
-        font-weight: 500;
+        font-size: 0.9rem;
+        font-weight: 700;
       }
       & > div {
         position: relative;
@@ -72,16 +77,16 @@ const Form = styled.form`
         background-color: #f5f5f5;
         font-size: 0.9rem;
         &.enable {
-          background-color: #367af5;
-          color: #fff;
+          background-color: #f7be16;
+          color: #323232;
         }
       }
       a {
         display: block;
-        padding-top: 30px;
+        padding-top: 95px;
         text-align: center;
         color: #6e6e6e;
-        font-size: 0.8rem;
+        font-size: 14px;
       }
       .info_error {
         font-size: 0.78rem;
@@ -178,6 +183,7 @@ function RegisterPage() {
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <section>
+        <h1 className="register_tit">회원가입</h1>
         <ul className="input_box ph_text_field" ref={inputBox}>
           <li>
             <label>계정 이메일 (회원 ID)</label>

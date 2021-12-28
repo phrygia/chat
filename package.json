@@ -79,7 +79,7 @@
     "dev": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "deploy": "firebase deploy"
+    "deploy": "node scripts/build.js && firebase deploy"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -18,30 +18,36 @@ const Section = styled.section`
     display: flex;
     cursor: pointer;
     align-items: center;
-    padding: 5px 20px;
+    padding: 10px 25px;
     &:hover {
       background-color: #f2f2f2;
     }
     font-size: 0.8rem;
     strong {
       color: #262626;
-      font-weight: 500;
+      font-size: 14px;
     }
     p {
-      color: #737373;
+      margin-top: 6px;
+      color: #b9b9b9;
+      font-size: 12px;
     }
     [class$='circle'] {
-      width: 50px;
-      height: 50px;
-      margin-right: 10px;
-      border-radius: 50%;
+      width: 75px;
+      height: 75px;
+      margin-right: 15px;
+      border-radius: 20px;
       border: 1px solid #f2f2f2;
+      background-color: #fff;
     }
   }
   .me {
     [class$='circle'] {
       width: 54px;
       height: 54px;
+    }
+    & > a {
+      padding: 20px 25px;
     }
     .img_box {
       display: flex;
@@ -52,11 +58,12 @@ const Section = styled.section`
       justify-content: center;
       overflow: hidden;
       position: relative;
-      width: 54px;
-      height: 54px;
-      margin-right: 10px;
-      border-radius: 50%;
+      width: 75px;
+      height: 75px;
+      margin-right: 15px;
+      border-radius: 20px;
       border: 1px solid rgb(242, 242, 242);
+      background-color: #fff;
       img {
         color: transparent;
         width: 100%;
@@ -68,14 +75,21 @@ const Section = styled.section`
     }
   }
   .myFriends {
-    padding-top: 5px;
-    border-top: 1px solid #f2f2f2;
     & > h3 {
-      padding: 0 20px;
-      margin: 7px 0;
-      color: #7f7f7f;
-      font-size: 0.8rem;
-      font-weight: 500;
+      position: relative;
+      padding: 0 25px 10px;
+      margin: 10px 0 7px;
+      color: #323232;
+      font-size: 15px;
+      &:before {
+        content: '';
+        width: 40px;
+        height: 2px;
+        background-color: #f7be16;
+        position: absolute;
+        left: 25px;
+        bottom: 2px;
+      }
       span {
         margin-left: 3px;
       }
@@ -84,6 +98,22 @@ const Section = styled.section`
 `;
 
 const FriendsLists = styled.div`
+  /* 스크롤바 설정*/
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  /* 스크롤바 막대 설정*/
+  &::-webkit-scrollbar-thumb {
+    height: 17%;
+    background-color: #bcbbbb;
+    border-radius: 10px;
+  }
+
+  /* 스크롤바 뒷 배경 설정*/
+  &::-webkit-scrollbar-track {
+    background-color: #eee;
+  }
   .talk_title {
     button {
       border-radius: 100%;
@@ -183,8 +213,6 @@ function FriendsList() {
         name: chatRoomId,
       },
     };
-
-    // dispatch(setCurrentChatRoom(chatRoomData, true));
 
     await usersRef
       .child(currentUser)

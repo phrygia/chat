@@ -4,21 +4,20 @@ import { BsPersonFill } from 'react-icons/bs';
 import { IoChatbubbleSharp, IoSettingsSharp } from 'react-icons/io5';
 import { NavLink } from 'react-router-dom';
 import { Menu, MenuItem } from '@material-ui/core';
-import firebase from '../../../firebase';
+import firebase from '../firebase';
 import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-const Aside = styled.aside`
+const FooterContainer = styled.footer`
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
   left: 0;
   bottom: 0;
-  height: 60px;
+  height: 58px;
   width: 100%;
-  background-color: #ececed;
-  border-right: 1px solid #e7e7e8;
+  background-color: #15325b;
   overflow: hidden;
   padding-top: 7px;
   z-index: 99;
@@ -31,13 +30,12 @@ const Aside = styled.aside`
   & > a,
   & > button {
     * {
-      color: #acadb1;
+      color: #fff;
       transition: color 0.1s;
     }
-    &:hover,
     &.active {
       * {
-        color: #343740;
+        color: #f7be16;
       }
     }
   }
@@ -67,7 +65,7 @@ const SettingMenu = styled(Menu)`
   }
 `;
 
-function SidePanel() {
+function Footer() {
   const [anchorEl, setAnchorEl] = useState(null);
   const user = useSelector(state => state.user.currentUser);
   const settingBtn = useRef();
@@ -90,7 +88,7 @@ function SidePanel() {
   };
 
   return (
-    <Aside>
+    <FooterContainer>
       <NavLink to="/" exact activeClassName="active" className="userBtn">
         <BsPersonFill style={{ fontSize: '1.9rem' }} />
       </NavLink>
@@ -117,8 +115,8 @@ function SidePanel() {
         </MenuItem>
         <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
       </SettingMenu>
-    </Aside>
+    </FooterContainer>
   );
 }
 
-export default SidePanel;
+export default Footer;

@@ -5,24 +5,29 @@ import styled from 'styled-components';
 import { IoMdSend } from 'react-icons/io';
 
 const Form = styled.form`
-  width: 90%;
-  padding: 0 10px;
+  position: fixed;
+  bottom: 60px;
+  left: 0;
+  z-index: 3;
+  width: 100%;
+  border-top: 1px solid #efefef;
   input {
     width: 100%;
-    height: 32px;
-    margin-top: 10px;
-    background-color: #f5f5f5;
+    height: 45px;
+    margin-top: 5px;
     border-radius: 18px;
-    padding: 0 15px;
+    padding: 0 45px 0 15px;
     border: 0;
   }
 `;
 
 const ButtonArea = styled.div`
-  position: absolute;
-  top: 9px;
-  right: -8px;
+  position: fixed;
+  bottom: 60px;
+  right: 8px;
   width: 10%;
+  z-index: 3;
+  text-align: right;
   button {
     font-size: 1.6rem;
     color: #377af6;
@@ -100,6 +105,7 @@ function MessageForm({ scrollToBottom }) {
           style={{ resize: 'none' }}
           onChange={onChange}
           onKeyDown={handleKeyDown}
+          placeholder="메시지 입력..."
         />
       </Form>
 

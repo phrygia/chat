@@ -75,58 +75,88 @@ a {
 }
 
 #container {
-  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100vh;
 
-  .user_content {
-    width: 100%;
-    height: 100%;
-    background-color: #fff;
+  .phone_frame {
+    display: block;
+    background: -169px 0 / cover no-repeat url(../images/phone-mockup.png);
+    width: 800px;
+    height: 900px;
+    top: 50%;
+    margin-top: -450px;
+    transform: translateX(-50%);
+    @include centerPostion(fixed, 98, false, 50%, 50%);
+
+    &:before {
+      content: '';
+      width: 380px;
+      height: 36px;
+      position: absolute;
+      top: 26px;
+      left: 210px;
+      border-radius: 300px 300px 0 0;
+      background-color: #090909;
+    }
   }
-  .layout_content {
-    height: 100%;
-    overflow: hidden;
-    padding-bottom: 60px;
-    background-color: #fff;
-    & > .talk_box {
+  .container_wrapper {
+    .user_content {
+      width: 100%;
       height: 100%;
-      overflow-y: auto;
-      &.list {
-        padding: 64px 0 30px;
-      }
-    }
-    .talk_title {
-      @include position($position: fixed, $right: 0, $top: 0, $zIndex: 4, $width: 100%);
-      padding: 30px 20px 5px;
-      font-size: 0.6rem;
       background-color: #fff;
-      button {
-        border: 0;
-        outline: none;
+    }
+    .layout_content {
+      height: 100%;
+      overflow: hidden;
+      padding-bottom: 60px;
+      background-color: #fff;
+      & > .talk_box {
+        height: 100%;
+        overflow-y: auto;
+        &.list {
+          padding: 64px 0 30px;
+        }
+      }
+      .talk_title {
+        @include position(
+          $position: fixed,
+          $right: 0,
+          $top: 0,
+          $zIndex: 4,
+          $width: 100%
+        );
+        padding: 30px 20px 5px;
+        font-size: 0.6rem;
+        background-color: #fff;
+        button {
+          border: 0;
+          outline: none;
+        }
       }
     }
-  }
-  .info_error {
-    margin-top: 8px;
-    color: #e65f3e;
-    letter-spacing: -0.5px;
-    word-break: break-all;
+    .info_error {
+      margin-top: 8px;
+      color: #e65f3e;
+      letter-spacing: -0.5px;
+      word-break: break-all;
+    }
   }
 }
 
 // @media (min-width: 768px) {
-#container {
-  max-width: 500px;
-  min-width: 380px;
-  width: 80%;
-  height: 660px;
-  margin-top: -330px;
+#container .container_wrapper {
+  max-width: 382px;
+  min-width: 382px;
+  width: 382px;
+  height: 800px;
+  margin-top: -390.5px;
   transform: translateX(-50%);
   @include centerPostion(fixed, 99, false, 50%, 50%);
-  border: 1px solid $border_grey;
-  border-radius: 5px;
+  border-radius: 3px 3px 39px 39px;
   box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
 }
-// }
 
 // @media (max-width: 767px) {
 //   #container {

@@ -100,37 +100,38 @@ const Li = styled.li`
 `;
 
 function Message({ message, user }) {
-  const [getImage, setGetImage] = useState(defaultIcon);
+  // const [getImage, setGetImage] = useState(defaultIcon);
   const timeFromNow = timestamp => moment(timestamp).fromNow();
-  const allFriendsList = useSelector(
-    state => state.user.currentUser.allFriendsList,
-  );
+  // const allFriendsList = useSelector(
+  //   state => state.user.currentUser.allFriendsList,
+  // );
 
-  useEffect(() => {
-    allFriendsList &&
-      allFriendsList.filter(val => {
-        if (val.id === message.user.id) return setGetImage(val.image);
-      });
-  }, [allFriendsList, message.user.id]);
+  // useEffect(() => {
+  //   allFriendsList &&
+  //     allFriendsList.filter(val => {
+  //       if (val.id === message.user.id) return setGetImage(val.image);
+  //     });
+  // }, [allFriendsList, message.user.id]);
 
-  const isImage = message =>
-    message.hasOwnProperty('image') && !message.hasOwnProperty('content');
+  // const isImage = message =>
+  //   message.hasOwnProperty('image') && !message.hasOwnProperty('content');
 
   return (
     // 내가 쓴 메시지는 right
     <Li className={user && message.user.id === user.uid ? 'me' : 'other'}>
-      {message.user.id !== user.uid && (
+      {/* {message.user.id !== user.uid && (
         <Avatar alt={message.user.name} src={getImage} />
-      )}
+      )} */}
       <div className="text_bubbles">
         {user && message.user.id !== user.uid && (
           <strong>{message.user.name}</strong>
         )}
-        {isImage(message) ? (
+        {/* {isImage(message) ? (
           <img src={message.image} alt="" />
         ) : (
           <p>{message.content}</p>
-        )}
+        )} */}
+        <p>{message.content}</p>
         <span>{timeFromNow(message.timestamp)}</span>
       </div>
     </Li>

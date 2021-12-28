@@ -5,7 +5,7 @@ import firebase from '../../firebase';
 import close from '../../assets/images/close.png';
 
 const Form = styled.form`
-  width: 355px;
+  width: 330px;
   margin: 0 auto;
   h1 {
     padding: 170px 0 20px;
@@ -51,7 +51,7 @@ const Form = styled.form`
       background: #b1b1b1 url(${close}) center center / 70% 70% no-repeat;
     }
     label {
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       font-weight: 500;
       color: #333;
     }
@@ -77,8 +77,8 @@ const Form = styled.form`
       background-color: #f5f5f5;
       font-size: 0.9rem;
       &.enable {
-        background-color: #367af5;
-        color: #fff;
+        background-color: #f7be16;
+        color: #323232;
       }
       font-size: 0.9rem;
     }

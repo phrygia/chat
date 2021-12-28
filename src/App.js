@@ -16,7 +16,7 @@ import EditPassword from './components/user/EditPassword';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import UserInfo from './components/user/UserInfo';
 import FriendsList from './components/user/FriendsList';
-import SidePanel from './components/chat/side/SidePanel';
+import Footer from './components/Footer';
 import ChatList from './components/chat/ChatList';
 import EditProfile from './components/user/EditProfile';
 import ChatPage from './components/chat/talk/ChatPage';
@@ -112,19 +112,22 @@ function App() {
         <CircularProgress />
       ) : (
         <>
-          {sideShow && <SidePanel key={currentUser && currentUser.uid} />}
-          <div className={sideShow ? 'layout_content' : 'user_content'}>
-            <Switch>
-              <Route path="/login" exact component={LoginPage} />
-              <Route path="/register" exact component={RegisterPage} />
-              <Route path="/edit/password" exact component={EditPassword} />
-              <Route path="/" exact component={FriendsList} />
-              <Route path="/chat" exact component={ChatList} />
-              <Route path="/chat/:id" exact component={ChatPage} />
-              <Route path="/edit/profile" exact component={EditProfile} />
-              <Route path="/about" exact component={UserInfo} />
-              <Redirect from="*" to="/" />
-            </Switch>
+          <div className="phone_frame" />
+          <div className="container_wrapper">
+            {sideShow && <Footer key={currentUser && currentUser.uid} />}
+            <div className={sideShow ? 'layout_content' : 'user_content'}>
+              <Switch>
+                <Route path="/login" exact component={LoginPage} />
+                <Route path="/register" exact component={RegisterPage} />
+                <Route path="/edit/password" exact component={EditPassword} />
+                <Route path="/" exact component={FriendsList} />
+                <Route path="/chat" exact component={ChatList} />
+                <Route path="/chat/:id" exact component={ChatPage} />
+                <Route path="/edit/profile" exact component={EditProfile} />
+                <Route path="/about" exact component={UserInfo} />
+                <Redirect from="*" to="/" />
+              </Switch>
+            </div>
           </div>
         </>
       )}

@@ -10,15 +10,15 @@ const SearchBox = styled.div`
     position: absolute;
     font-size: 1.1rem;
     left: 30px;
-    top: 20px;
+    top: 29px;
     color: #999;
   }
   input {
     padding: 0 10px 0 30px;
-    border-radius: 20px;
+    border-radius: 10px;
     color: #999;
-    height: 30px;
-    width: calc(100% - 40px);
+    height: 50px;
+    width: calc(100% - 30px);
     background-color: #f2f2f2;
     border: 1px solid #f2f2f2;
     &.focus {
@@ -27,7 +27,7 @@ const SearchBox = styled.div`
     }
   }
   button {
-    width: 40px;
+    width: 30px;
     padding: 3px 0 0 10px;
     svg {
       font-size: 1.5rem;

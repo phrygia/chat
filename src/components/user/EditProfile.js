@@ -8,19 +8,18 @@ import styled from 'styled-components';
 import { ImCamera } from 'react-icons/im';
 
 const Form = styled.form`
-  padding: 115px 20px 20px;
+  padding: 85px 20px 20px;
   .my_info {
     text-align: center;
     & > div {
       position: relative;
-      display: inline-block;
       button {
         position: absolute;
-        right: 0;
-        bottom: 0;
+        right: 10px;
+        bottom: -10px;
         width: 30px;
         height: 30px;
-        border: 1px solid #f2f2f2;
+        border: 1px solid #ddd;
         border-radius: 15px;
         background-color: #fff;
         text-align: center;
@@ -32,7 +31,7 @@ const Form = styled.form`
       }
     }
     & > p {
-      margin: 15px 0 60px;
+      margin: 15px 0 30px;
       font-size: 0.9rem;
       b {
         margin-right: 15px;
@@ -72,20 +71,23 @@ const Form = styled.form`
     }
     button {
       display: block;
+      width: 100%;
+      height: 50px;
       margin: 30px auto 0;
       padding: 8px 40px;
       font-size: 0.85rem;
-      background-color: #367af5;
+      background-color: #f7be16;
       border: 0;
-      color: #fff;
-      border-radius: 20px;
+      color: #323232;
+      border-radius: 5px;
     }
   }
   .profile_img {
-    width: 95px;
-    height: 95px;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
     border: 1px solid #f2f2f2;
-    border-radius: 50%;
+    border-radius: 20px;
   }
 `;
 

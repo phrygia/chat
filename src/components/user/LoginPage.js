@@ -1,28 +1,35 @@
 import React, { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import icon from '../../assets/images/talk_icon.png';
+import icon from '../../assets/images/talk_icon2.png';
 import { useForm } from 'react-hook-form';
 import firebase from '../../firebase';
 import { useEffect } from 'react';
 
 const Form = styled.form`
-  position: absolute;
-  left: 0;
+  position: relative;
   padding-top: 140px;
   width: 100%;
   height: 100%;
   text-align: center;
+  background-color: #15325b;
+
   header {
     img {
-      width: 150px;
+      width: 60px;
+    }
+    h1 {
+      margin-bottom: 30px;
+      font-size: 1.8rem;
+      font-weight: 500;
+      color: #fff;
     }
   }
   section {
     & > div {
       &.input_box {
-        width: 300px;
-        margin: 35px auto 10px;
+        width: 330px;
+        margin: 80px auto 10px;
         border: 1px solid #fff;
         border-radius: 5px;
         overflow: hidden;
@@ -55,22 +62,22 @@ const Form = styled.form`
         }
       }
       button {
-        width: 300px;
+        width: 330px;
         height: 50px;
         border: 0;
         border-radius: 5px;
         color: #fff;
-        background-color: #367af5;
+        background-color: #41689f;
         font-size: 0.9rem;
         &.on {
-          background-color: #403631;
-          color: #fff;
+          background-color: #f7be16;
+          color: #323232;
         }
       }
     }
     .info_error {
       text-align: left;
-      width: 300px;
+      width: 330px;
       margin: 20px auto 0;
       font-size: 0.78rem;
     }
@@ -90,17 +97,17 @@ const Ul = styled.ul`
       &:after {
         content: '';
         width: 1px;
-        height: 11px;
+        height: 13px;
         position: absolute;
         right: 0;
-        top: 9px;
-        background-color: rgba(64, 58, 12, 0.3);
+        top: 8px;
+        background-color: rgba(255, 255, 255, 0.3);
       }
     }
     a {
       padding: 0 10px;
-      color: #6e6e6e;
-      font-size: 0.8rem;
+      color: #ffffff;
+      font-size: 0.9rem;
     }
   }
 `;
@@ -141,11 +148,8 @@ function LoginPage() {
 
       // 로그인 성공 후 친구목록으로 이동
       history.push('/');
-      // setLoading(false);
     } catch (error) {
-      // setLoading(false);
       setErrorSubmit(error.message);
-      // console.log(error);
     }
     if (isMounted.current) {
       setLoading(false);
@@ -155,6 +159,7 @@ function LoginPage() {
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <header>
+        <h1>Simple Messenger</h1>
         <img src={icon} alt="프리지아톡 로고" />
       </header>
       <section>
