@@ -5,11 +5,44 @@ import styled from 'styled-components';
 import MessageForm from './MessageForm';
 import TalkHeader from './TalkHeader';
 import moment from 'moment';
+import { IoCloseOutline } from 'react-icons/io5';
+import PinchZoomPan from 'react-responsive-pinch-zoom-pan';
 
 const Main = styled.main`
   height: 100%;
   overflow: hidden;
   background-color: #fff;
+
+  .image_popup {
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.8);
+    button {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      color: #fff;
+      font-size: 2rem;
+      z-index: 3;
+    }
+    .img_box {
+      width: 100%;
+      & > div {
+        overflow: visible !important;
+        img {
+          max-width: 100%;
+          height: auto;
+        }
+      }
+    }
+  }
 `;
 
 const Ul = styled.ul`
@@ -43,8 +76,9 @@ const Ul = styled.ul`
 const Li = styled.li`
   display: inline-block;
   width: 100%;
-  padding: 10px 0;
+  padding: 8px 0;
   width: 100%;
+  overflow: hidden;
   [class*='circle'] {
     width: 40px;
     height: 40px;
@@ -53,7 +87,7 @@ const Li = styled.li`
   }
   .text_bubbles {
     position: relative;
-    max-width: 60%;
+    max-width: 70%;
     span {
       position: absolute;
       bottom: 2px;
@@ -71,6 +105,7 @@ const Li = styled.li`
     img {
       max-width: 100%;
       height: auto;
+      cursor: pointer;
     }
   }
 
@@ -78,9 +113,6 @@ const Li = styled.li`
     text-align: right;
     .text_bubbles {
       float: right;
-      strong {
-        display: none;
-      }
       span {
         padding-right: 7px;
         text-align: right;
@@ -121,6 +153,8 @@ function ChatPage() {
   const [messages, setMessages] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResult, setSearchResult] = useState('');
+  const [isImagePopup, setIsImagePopup] = useState(false);
+  const [imagePopup, setImagePopup] = useState('');
   const user = useSelector(state => state.user.currentUser);
   const chatFriend = useSelector(state => state.chat.currentChatFriend);
   const usersRef = firebase.database().ref('users');
@@ -142,11 +176,11 @@ function ChatPage() {
   const addMessagesListener = id => {
     messagesRef.child(id).on('child_added', snapshot => {
       setMessages(prev => [...prev, snapshot.val()]);
-    });
 
-    setTimeout(() => {
-      scrollToBottom();
-    }, 250);
+      setTimeout(() => {
+        scrollToBottom();
+      }, 350);
+    });
   };
 
   const scrollToBottom = () => {
@@ -182,7 +216,6 @@ function ChatPage() {
             className={msg.user.id === user.uid ? 'me' : 'other'}
           >
             <div className="text_bubbles">
-              {/* {user && user.id !== user.uid && <strong>{msg.user.name}</strong>} */}
               <p>{content}</p>
               <span>{timeFromNow(timestamp)}</span>
             </div>
@@ -193,6 +226,21 @@ function ChatPage() {
     }
   };
 
+  const isImage = msg => {
+    return msg.hasOwnProperty('image') && !msg.hasOwnProperty('content');
+  };
+
+  const handleImagePopup = src => {
+    setIsImagePopup(true);
+    setImagePopup(src);
+    console.log(src);
+  };
+
+  const handlePopupClose = () => {
+    setIsImagePopup(false);
+    setImagePopup('');
+  };
+
   const messageList =
     messages.length > 0 &&
     messages.map((message, idx) => (
@@ -201,8 +249,17 @@ function ChatPage() {
         className={user && message.user.id === user.uid ? 'me' : 'other'}
       >
         <div className="text_bubbles">
-          {/* {message.user.id !== user.uid && <strong>{message.user.name}</strong>} */}
-          <p>{message && message.content}</p>
+          {isImage(message) ? (
+            <button onClick={() => handleImagePopup(message.image)}>
+              <img
+                style={{ maxWidth: '250px' }}
+                alt="이미지"
+                src={message.image}
+              />
+            </button>
+          ) : (
+            <p>{message.content}</p>
+          )}
           <span>{timeFromNow(message.timestamp)}</span>
         </div>
       </Li>
@@ -216,6 +273,25 @@ function ChatPage() {
         <li style={{ height: '1px', width: '100%' }} ref={messagesEndRef} />
       </Ul>
       <MessageForm scrollToBottom={scrollToBottom} />
+      {isImagePopup && (
+        <div className="image_popup">
+          <button onClick={handlePopupClose}>
+            <IoCloseOutline />
+          </button>
+          <div className="img_box">
+            <PinchZoomPan
+              doubleTapBehavior="zoom"
+              position="center"
+              initialScale={1}
+              minScale={1}
+              maxScale={4}
+              zoomButtons={false}
+            >
+              <img src={imagePopup} alt={imagePopup} />
+            </PinchZoomPan>
+          </div>
+        </div>
+      )}
     </Main>
   );
 }
