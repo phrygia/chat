@@ -4,7 +4,7 @@
 
 - React (CRA)
 - 스타일링 : styled-components
-- DB : firebase
+- DB : firebase (v8)
 - 상태관리 : redux + redux-thunk
 
 ## 주요기능

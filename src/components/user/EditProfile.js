@@ -15,17 +15,17 @@ const Form = styled.form`
       position: relative;
       button {
         position: absolute;
-        right: 10px;
-        bottom: -10px;
-        width: 30px;
-        height: 30px;
+        right: 40px;
+        bottom: 0;
+        width: 40px;
+        height: 40px;
         border: 1px solid #ddd;
-        border-radius: 15px;
+        border-radius: 50%;
         background-color: #fff;
         text-align: center;
         z-index: 3;
         svg {
-          font-size: 0.9rem;
+          font-size: 1.1rem;
           color: #737373;
         }
       }
@@ -87,7 +87,7 @@ const Form = styled.form`
     height: 300px;
     margin: 0 auto;
     border: 1px solid #f2f2f2;
-    border-radius: 20px;
+    border-radius: 80px;
   }
 `;
 
