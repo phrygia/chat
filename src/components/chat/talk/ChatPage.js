@@ -25,14 +25,16 @@ const Main = styled.main`
     z-index: 1000;
     background-color: rgba(0, 0, 0, 0.8);
     button {
-      position: absolute;
+      position: fixed;
       right: 10px;
       top: 10px;
       color: #fff;
       font-size: 2rem;
-      z-index: 3;
+      z-index: 999;
     }
     .img_box {
+      position: relative;
+      z-index: 100;
       width: 100%;
       & > div {
         overflow: visible !important;
@@ -233,7 +235,6 @@ function ChatPage() {
   const handleImagePopup = src => {
     setIsImagePopup(true);
     setImagePopup(src);
-    console.log(src);
   };
 
   const handlePopupClose = () => {

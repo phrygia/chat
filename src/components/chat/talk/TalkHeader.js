@@ -90,9 +90,9 @@ const SettingsSharp = styled(IoMenuOutline)`
 function TalkHeader({ handleSearchChange }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [search, setSearch] = useState(false);
-  const [loading, setLoading] = useState(false);
   const chatFriend = useSelector(state => state.chat.currentChatFriend);
   const messagesRef = firebase.database().ref('messages');
+  const storageRef = firebase.storage().ref();
   const history = useHistory();
   const settingBtn = useRef();
 
@@ -119,6 +119,20 @@ function TalkHeader({ handleSearchChange }) {
 
   const handleRemoveRoom = () => {
     messagesRef.child(chatFriend.id).remove();
+    storageRef
+      .child(`/message/private/${chatFriend.id}`)
+      .listAll()
+      .then(listResults => {
+        const promises = listResults.items.map(item => {
+          return item.delete();
+        });
+        Promise.all(promises);
+        console.log(promises);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
     history.push('/chat');
   };
 
