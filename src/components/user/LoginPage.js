@@ -41,7 +41,7 @@ const Form = styled.form`
           border: 0;
           font-size: 0.9rem;
           &.password {
-            border-top: 1px solid #fff;
+            border-top: 1px solid #41689f2e;
             font-weight: 900;
             letter-spacing: 1.5px;
             &::placeholder {

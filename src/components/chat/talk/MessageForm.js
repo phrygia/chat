@@ -30,7 +30,7 @@ const ButtonArea = styled.div`
   text-align: right;
   button {
     font-size: 1.6rem;
-    color: #377af6;
+    color: #15325b;
   }
 `;
 
@@ -79,7 +79,6 @@ function MessageForm({ scrollToBottom }) {
       setLoading(false);
       setContent('');
       setErrors([]);
-      scrollToBottom();
     } catch (error) {
       setErrors(prev => prev.concat(error.message));
       setLoading(false);
@@ -87,6 +86,10 @@ function MessageForm({ scrollToBottom }) {
         setErrors([]);
       }, 5000);
     }
+
+    setTimeout(() => {
+      scrollToBottom();
+    }, 200);
   };
 
   const handleKeyDown = e => {
@@ -99,7 +102,7 @@ function MessageForm({ scrollToBottom }) {
   return (
     <div style={{ position: 'relative' }}>
       {errors}
-      <Form onSubmit={onsubmit}>
+      <Form>
         <input
           value={content}
           style={{ resize: 'none' }}

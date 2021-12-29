@@ -67,10 +67,9 @@ function ChatList() {
   const [userRender, setUserRender] = useState();
   const [usersList, setUsersList] = useState();
   const [search, setSearch] = useState(true);
-  const [selectedRoom, setSelecedtRoom] = useState('');
   const loginUser = useSelector(state => state.user.currentUser);
   const allFriendsList = useSelector(
-    state => state.user.currentUser.allFriendsList,
+    state => state.user.currentUser?.allFriendsList,
   );
   const usersRef = firebase.database().ref('users');
   const messagesRef = firebase.database().ref('messages');
@@ -113,7 +112,7 @@ function ChatList() {
       usersRef.off();
       messagesRef.off();
     };
-  }, [allFriendsList]);
+  }, [loginUser, allFriendsList]);
 
   const filterUserName = (obj, key) => {
     // 마지막 텍스트
@@ -160,7 +159,6 @@ function ChatList() {
                 key={user.user.id}
                 style={{
                   cursor: 'pointer',
-                  backgroundColor: user.user.id === selectedRoom && '#ffff45',
                 }}
                 onDoubleClick={() => changeChatRoom(user.user)}
               >
@@ -183,7 +181,6 @@ function ChatList() {
               key={user.user.id}
               style={{
                 cursor: 'pointer',
-                backgroundColor: user.user.id === selectedRoom && '#ffff45',
               }}
               onDoubleClick={() => changeChatRoom(user.user)}
             >
@@ -222,7 +219,6 @@ function ChatList() {
       .child(currentUser)
       .update({ currentChatFriend: chatRoomData });
 
-    setSelecedtRoom(userId);
     history.push(`/chat/${user.name}`);
   };
 

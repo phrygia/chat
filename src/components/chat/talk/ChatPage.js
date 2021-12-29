@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import firebase from '../../../firebase';
 import styled from 'styled-components';
@@ -139,33 +139,15 @@ function ChatPage() {
     };
   }, [chatFriend, user]);
 
-  const addMessagesListener = useCallback(
-    id => {
-      messagesRef.child(id).on('child_added', snapshot => {
-        setMessages(prev => [...prev, snapshot.val()]);
-      });
+  const addMessagesListener = id => {
+    messagesRef.child(id).on('child_added', snapshot => {
+      setMessages(prev => [...prev, snapshot.val()]);
+    });
 
-      setTimeout(() => {
-        scrollToBottom();
-      }, 250);
-    },
-    [messages],
-  );
-
-  const ul =
-    messages.length > 0 &&
-    messages.map((message, idx) => (
-      <Li
-        key={message.timestamp + idx}
-        className={user && message.user.id === user.uid ? 'me' : 'other'}
-      >
-        <div className="text_bubbles">
-          {/* {message.user.id !== user.uid && <strong>{message.user.name}</strong>} */}
-          <p>{message && message.content}</p>
-          <span>{timeFromNow(message.timestamp)}</span>
-        </div>
-      </Li>
-    ));
+    setTimeout(() => {
+      scrollToBottom();
+    }, 250);
+  };
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -208,15 +190,29 @@ function ChatPage() {
         );
       });
       setSearchResult(result);
-      scrollToBottom();
     }
   };
 
+  const messageList =
+    messages.length > 0 &&
+    messages.map((message, idx) => (
+      <Li
+        key={message.timestamp + idx}
+        className={user && message.user.id === user.uid ? 'me' : 'other'}
+      >
+        <div className="text_bubbles">
+          {/* {message.user.id !== user.uid && <strong>{message.user.name}</strong>} */}
+          <p>{message && message.content}</p>
+          <span>{timeFromNow(message.timestamp)}</span>
+        </div>
+      </Li>
+    ));
+
   return (
     <Main>
-      <TalkHeader handleSearchChange={handleSearchChange} />
+      <TalkHeader handleSearchChange={handleSearchChange} id={chatFriend} />
       <Ul style={{ overflowY: 'auto' }}>
-        {searchTerm ? searchResult : ul}
+        {searchTerm ? searchResult : messageList}
         <li style={{ height: '1px', width: '100%' }} ref={messagesEndRef} />
       </Ul>
       <MessageForm scrollToBottom={scrollToBottom} />

@@ -42,6 +42,9 @@ const Section = styled.section`
     }
   }
   .me {
+    &.sch {
+      display: none;
+    }
     [class$='circle'] {
       width: 54px;
       height: 54px;
@@ -148,8 +151,9 @@ function FriendsList() {
   const [search, setSearch] = useState(false);
   const [searchStatus, setSearchStatus] = useState(false);
   const [open, setOpen] = useState(false);
+  const [showMe, setShowMe] = useState(true);
   const user = useSelector(state => state.user.currentUser);
-  const { allFriendsList } = user ? user : [];
+  const allFriendsList = user?.allFriendsList;
   const usersRef = firebase.database().ref('users');
   const dispatch = useDispatch();
   const history = useHistory();
@@ -157,44 +161,68 @@ function FriendsList() {
   useEffect(() => {
     if (user && allFriendsList) {
       let friendsArr = [];
-      let arr = [];
-      let uniqueArr = [];
+
       usersRef.child(`${user.uid}/friends`).on('child_added', snapshot => {
         friendsArr.push(snapshot.val());
         dispatch(loadFriendsList(friendsArr));
-        const result = friendsArr.map((val, index) => {
-          // all user 목록에서 이미지 가져오기
-          let getInfo = [];
-          allFriendsList &&
-            allFriendsList.filter(list => {
-              if (list.id === val.id) return (getInfo = list);
-            });
-          arr.push(getInfo);
-          arr.forEach(val => {
-            if (!uniqueArr.includes(val)) uniqueArr.push(val);
-          });
-          setMyFriendsList(uniqueArr);
-          return (
-            <li
-              key={val.id + index}
-              onDoubleClick={() => changeChatRoom(val, getInfo)}
-            >
-              <Avatar src={getInfo.image} alt={getInfo.name} />
-              <div>
-                <strong>{getInfo.name}</strong>
-                {getInfo.statusMessage && <p>{getInfo.statusMessage}</p>}
-              </div>
-            </li>
-          );
-        });
-        setRenderList(result);
-        setFriendsList(result);
+
+        setRenderList(handleFriendList(friendsArr));
+        setFriendsList(handleFriendList(friendsArr));
       });
     }
     return () => {
-      if (user) usersRef.off();
+      usersRef.off();
     };
   }, [allFriendsList, dispatch]);
+
+  const handleremoveFriend = id => {
+    if (window.confirm('선택한 친구를 삭제하시겠습니까?')) {
+      const filterdList = user.myFriendsList.filter(val => {
+        if (id !== val.id) return val;
+      });
+      // dispatch(loadFriendsList(filterdList));
+      // setRenderList(handleFriendList(filterdList));
+      // setFriendsList(handleFriendList(filterdList));
+      // usersRef.child(`${user.uid}/friends/${id}`).remove();
+      console.log(user.myFriendsList, filterdList);
+      alert('성공적으로 삭제하였습니다.');
+    } else {
+      alert('취소합니다.');
+    }
+  };
+
+  const handleFriendList = friendsArr => {
+    let arr = [];
+    let uniqueArr = [];
+
+    const result = friendsArr.map((val, index) => {
+      // all user 목록에서 이미지 가져오기
+      let getInfo = [];
+      allFriendsList &&
+        allFriendsList.filter(list => {
+          if (list.id === val.id) return (getInfo = list);
+        });
+      arr.push(getInfo);
+      arr.forEach(val => {
+        if (!uniqueArr.includes(val)) uniqueArr.push(val);
+      });
+      setMyFriendsList(uniqueArr);
+      return (
+        <li
+          key={val.id + index}
+          onDoubleClick={() => changeChatRoom(val, getInfo)}
+        >
+          <Avatar src={getInfo.image} alt={getInfo.name} />
+          <div>
+            <strong>{getInfo.name}</strong>
+            {getInfo.statusMessage && <p>{getInfo.statusMessage}</p>}
+          </div>
+          {/* <button onClick={() => handleremoveFriend(val.id)}>삭제</button> */}
+        </li>
+      );
+    });
+    return result;
+  };
 
   const changeChatRoom = async (val, info) => {
     const currentUser = user.uid;
@@ -229,8 +257,10 @@ function FriendsList() {
   const onChange = e => {
     if (e.target.value.length === 0) {
       renderDirectMeesage(renderList, false, e.target.value);
+      setShowMe(true);
     } else {
       renderDirectMeesage(myFriendsList, true, e.target.value);
+      setShowMe(false);
     }
   };
 
@@ -242,6 +272,7 @@ function FriendsList() {
     setSearch(!search);
     setSearchStatus(false);
     setFriendsList(renderList);
+    setShowMe(true);
   };
 
   const renderDirectMeesage = (users, isSearch, schWord) => {
@@ -307,7 +338,7 @@ function FriendsList() {
         friendsList={friendsList}
       />
       <Section>
-        <article className="me">
+        <article className={showMe ? 'me' : 'sch me'}>
           <Link to="/edit/profile">
             <div className="img_box">
               <img

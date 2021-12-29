@@ -58,6 +58,7 @@ const SettingsSharp = styled(IoSettingsSharp)`
 `;
 
 const SettingMenu = styled(Menu)`
+  margin: -81px 0 0 -84px;
   li,
   a {
     font-size: 0.9rem;
