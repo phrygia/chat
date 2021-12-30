@@ -138,7 +138,7 @@ function EditPassword(props) {
       })
       .catch(function (error) {
         setError(error.message);
-        console.log(error);
+        // console.log(error);
       });
   };
 

@@ -1,4 +1,4 @@
-# phrygia-talk
+# Simple talk
 
 ## 🛠 사용기술
 
@@ -7,7 +7,7 @@
 - DB : firebase (v8)
 - 상태관리 : redux + redux-thunk
 
-## 주요기능
+## ✨주요기능
 
 - 인증(로그인, 회원가입, 로그아웃)
 - 친구(목록, 친구추가)
@@ -34,6 +34,7 @@ src
 - [create-react-app](https://github.com/facebook/create-react-app)
 - [react 16.13.1](https://github.com/facebook/react)
 - [react-router 5.2.0](https://github.com/remix-run/react-router)
+- [firebase](https://firebase.google.com/)
 
 ### Development Setting
 

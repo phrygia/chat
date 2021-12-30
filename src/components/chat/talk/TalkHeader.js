@@ -127,7 +127,7 @@ function TalkHeader({ handleSearchChange }) {
           return item.delete();
         });
         Promise.all(promises);
-        console.log(promises);
+        // console.log(promises);
       })
       .catch(error => {
         console.log(error);

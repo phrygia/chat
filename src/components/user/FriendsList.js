@@ -184,7 +184,7 @@ function FriendsList() {
       // setRenderList(handleFriendList(filterdList));
       // setFriendsList(handleFriendList(filterdList));
       // usersRef.child(`${user.uid}/friends/${id}`).remove();
-      console.log(user.myFriendsList, filterdList);
+      // console.log(user.myFriendsList, filterdList);
       alert('성공적으로 삭제하였습니다.');
     } else {
       alert('취소합니다.');
