@@ -64,6 +64,7 @@ const Form = styled.form`
           height: 17px;
           color: #fff;
           background: #b1b1b1 url(${close}) center center / 70% 70% no-repeat;
+          cursor: pointer;
         }
       }
       .btn_submit {
@@ -101,6 +102,18 @@ function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [errorSubmit, setErrorSubmit] = useState('');
   const [enable, setEnable] = useState('');
+  const [focus, setFocus] = useState({
+    email: '',
+    password: '',
+    confirm_password: '',
+    name: '',
+  });
+  const [display, setDisplay] = useState({
+    email: 'none',
+    password: 'none',
+    confirm_password: 'none',
+    name: 'none',
+  });
   const passwordRef = useRef();
   passwordRef.current = watch('password');
 
@@ -108,15 +121,15 @@ function RegisterPage() {
   const btnSubmit = useRef();
 
   const onChange = e => {
-    const { value } = e.target;
+    const { value, name } = e.target;
 
     // input의 길이가 0이싱이면 삭제버튼이 나타나고 focus 효과
     if (value.length > 0) {
-      e.target.parentNode.classList.add('focus');
-      e.target.nextSibling.style.display = 'block';
+      setDisplay({ ...display, [name]: 'block' });
+      setFocus({ ...focus, [name]: 'focus' });
     } else {
-      e.target.parentNode.classList.remove('focus');
-      e.target.nextSibling.style.display = 'none';
+      setDisplay({ ...display, [name]: 'none' });
+      setFocus({ ...focus, [name]: '' });
     }
 
     // 가입완료 버튼 활성화
@@ -135,17 +148,16 @@ function RegisterPage() {
 
   const inputReset = e => {
     e.preventDefault();
+    const { name } = e.target.previousSibling;
 
     // 클릭되면 버튼 사라짐, focus ui 효과 사라짐
-    e.target.style.display = 'none';
-    e.target.parentNode.classList.remove('focus');
+    setDisplay({ ...display, [name]: 'none' });
+    setFocus({ ...focus, [name]: '' });
 
     // 클릭되면 가입완료 버튼 disable 처리됨
     setEnable('');
     setLoading(true);
 
-    // 삭제 버튼의 앞에 위치한 input에 접근해서 value 및 에러를 초기화
-    const { name } = e.target.previousSibling;
     setValue(name, '');
     clearErrors(name, '');
   };
@@ -187,7 +199,7 @@ function RegisterPage() {
         <ul className="input_box ph_text_field" ref={inputBox}>
           <li>
             <label>계정 이메일 (회원 ID)</label>
-            <div>
+            <div className={focus.email === '' ? '' : 'focus'}>
               <input
                 name="email"
                 type="email"
@@ -198,7 +210,11 @@ function RegisterPage() {
                 placeholder="이메일 입력"
                 onChange={onChange}
               />
-              <span className="btn_del" onClick={inputReset} />
+              <span
+                className="btn_del"
+                onClick={inputReset}
+                style={{ display: display.email === 'none' ? 'none' : 'block' }}
+              />
             </div>
             {errors.email && (
               <p className="info_error">유효한 이메일 주소가 아닙니다.</p>
@@ -206,7 +222,7 @@ function RegisterPage() {
           </li>
           <li>
             <label>비밀번호</label>
-            <div>
+            <div className={focus.password === '' ? '' : 'focus'}>
               <input
                 name="password"
                 type="password"
@@ -218,7 +234,13 @@ function RegisterPage() {
                 placeholder="비밀번호(8~20자리)"
                 onChange={onChange}
               />
-              <span className="btn_del" onClick={inputReset} />
+              <span
+                className="btn_del"
+                onClick={inputReset}
+                style={{
+                  display: display.password === 'none' ? 'none' : 'block',
+                }}
+              />
             </div>
             <p className="info_error">
               {errors.password &&
@@ -228,7 +250,7 @@ function RegisterPage() {
                 errors.password.type === 'maxLength' &&
                 '비밀번호는 8-20자리로 입력해주세요.'}
             </p>
-            <div>
+            <div className={focus.confirm_password === '' ? '' : 'focus'}>
               <input
                 name="confirm_password"
                 type="password"
@@ -241,7 +263,14 @@ function RegisterPage() {
                 placeholder="비밀번호 재입력"
                 onChange={onChange}
               />
-              <span className="btn_del" onClick={inputReset} />
+              <span
+                className="btn_del"
+                onClick={inputReset}
+                style={{
+                  display:
+                    display.confirm_password === 'none' ? 'none' : 'block',
+                }}
+              />
             </div>
             <p className="info_error">
               {errors.confirm_password &&
@@ -254,7 +283,7 @@ function RegisterPage() {
           </li>
           <li>
             <label>닉네임</label>
-            <div>
+            <div className={focus.name === '' ? '' : 'focus'}>
               <input
                 name="name"
                 type="text"
@@ -265,7 +294,11 @@ function RegisterPage() {
                 placeholder="닉네임을 입력해 주세요."
                 onChange={onChange}
               />
-              <span className="btn_del" onClick={inputReset} />
+              <span
+                className="btn_del"
+                onClick={inputReset}
+                style={{ display: display.name === 'none' ? 'none' : 'block' }}
+              />
             </div>
             <p className="info_error">
               {errors.name &&
