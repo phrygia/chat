@@ -52,7 +52,6 @@ function App() {
 
         // 유저 상태메시지, 닉네임, 알림설정여부 가져오기(displayName과 다름)
         usersRef.child(`${user.uid}`).on('value', snapshot => {
-          // console.log(snapshot.val().alarmStatus)
           if (snapshot.val() && snapshot.val().statusMessage) {
             const { statusMessage } = snapshot.val();
             dispatch(loadStatusMessage(statusMessage));

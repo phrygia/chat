@@ -49,6 +49,7 @@ const Form = styled.form`
       height: 17px;
       color: #fff;
       background: #b1b1b1 url(${close}) center center / 70% 70% no-repeat;
+      cursor: pointer;
     }
     label {
       font-size: 0.9rem;
@@ -88,17 +89,19 @@ const Form = styled.form`
   }
 `;
 
-function EditPassword(props) {
+function EditPassword() {
   const { register, errors, handleSubmit } = useForm();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [enable, setEnable] = useState('');
+  const [focus, setFocus] = useState('');
+  const [display, setDisplay] = useState('none');
   const [loading, setLoading] = useState(false);
 
   const inputReset = e => {
     // 클릭되면 버튼 사라짐, focus ui 효과 사라짐
-    e.target.style.display = 'none';
-    e.target.parentNode.classList.remove('focus');
+    setDisplay('none');
+    setFocus('');
 
     setEnable('');
     setEmail('');
@@ -111,11 +114,11 @@ function EditPassword(props) {
 
     // input의 길이가 0이싱이면 삭제버튼이 나타나고 focus 효과
     if (value.length > 0) {
-      e.target.parentNode.classList.add('focus');
-      e.target.nextSibling.style.display = 'block';
+      setFocus('focus');
+      setDisplay('block');
     } else {
-      e.target.parentNode.classList.remove('focus');
-      e.target.nextSibling.style.display = 'none';
+      setFocus('');
+      setDisplay('none');
     }
 
     if (e.target.value.length > 8) {
@@ -138,7 +141,6 @@ function EditPassword(props) {
       })
       .catch(function (error) {
         setError(error.message);
-        // console.log(error);
       });
   };
 
@@ -151,7 +153,7 @@ function EditPassword(props) {
       </p>
       <div className="input_box">
         <label>이메일 계정</label>
-        <div>
+        <div className={`${focus}`}>
           <input
             type="email"
             name="email"
@@ -164,7 +166,11 @@ function EditPassword(props) {
               pattern: /^\S+@\S+$/i,
             })}
           />
-          <span className="btn_del" onClick={inputReset} />
+          <span
+            className="btn_del"
+            onClick={inputReset}
+            style={{ display: `${display}` }}
+          />
         </div>
         {errors.email && (
           <p className="info_error">유효한 이메일 주소가 아닙니다.</p>
