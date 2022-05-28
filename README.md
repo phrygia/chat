@@ -1,4 +1,7 @@
 # Simple talk
+## 개인 프로젝트
+
+![talk](https://user-images.githubusercontent.com/40693181/170808412-1f61c8be-3897-4942-af44-e8f99a1b2318.jpg)
 
 ## 🛠 사용기술
 
